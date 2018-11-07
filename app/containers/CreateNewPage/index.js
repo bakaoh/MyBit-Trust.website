@@ -55,6 +55,7 @@ export default class CreateNewPage extends React.Component {
     this.handleBack = this.handleBack.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleAlertClosed = this.handleAlertClosed.bind(this);
+    this.handleDeadlineChange = this.handleDeadlineChange.bind(this);
     this.handleTermsAndConditionsClicked = this.handleTermsAndConditionsClicked.bind(this);
   }
 
@@ -63,7 +64,7 @@ export default class CreateNewPage extends React.Component {
       shouldConfirm: false,
       recepient: '',
       amountEth: '',
-      blockNumber: '',
+      deadline: '',
     })
   }
 
@@ -72,8 +73,7 @@ export default class CreateNewPage extends React.Component {
   }
 
   async handleConfirm(){
-    const { recepient, blockNumber, amountEth } = this.state;
-    const { currentBlock } = this.props;
+    const { recepient, deadline, amountEth } = this.state;
 
     let alertType = undefined;
     let alertMessage = undefined;
@@ -107,8 +107,8 @@ export default class CreateNewPage extends React.Component {
       title: 'Amount',
       content: [amountEth + " ETH"]
     }, {
-      title: 'Deliver on Block Number',
-      content: [blockNumber + currentBlock]
+      title: 'Deliver on',
+      content: [new Date(deadline).toString()]
     })
 
     this.setState({shouldConfirm: true})
@@ -129,7 +129,7 @@ export default class CreateNewPage extends React.Component {
           recepient,
           amountEth,
           false,
-          blockNumber
+          deadline
         );
       }
       if (result) {
@@ -155,6 +155,12 @@ export default class CreateNewPage extends React.Component {
   handleInputChange(text, id){
     this.setState({
       [id]: text,
+    })
+  }
+
+  handleDeadlineChange(value, dateString){
+    this.setState({
+      deadline: value.unix(),
     })
   }
 
@@ -190,11 +196,11 @@ export default class CreateNewPage extends React.Component {
           min={0}
         />
         <Input
-          placeholder="Send payment in #blocks"
-          type="number"
-          value={this.state.blockNumber}
-          onChange={(number) => this.handleInputChange(number, 'blockNumber')}
-          tooltipTitle="How many blocks until payment is sent? 250 is roughly 1 hour."
+          placeholder="Send payment in date"
+          type="datetime"
+          value={this.state.deadline}
+          onChange={this.handleDeadlineChange}
+          tooltipTitle="The date time payment will be sent?"
           hasTooltip
           min={10}
         />

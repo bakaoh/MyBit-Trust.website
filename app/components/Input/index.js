@@ -2,15 +2,26 @@ import React from 'react';
 import styled from 'styled-components';
 import { default as InputAnt} from 'antd/lib/input';
 import { default as InputNumberAnt} from 'antd/lib/input-number';
+import DatePicker from 'antd/lib/date-picker';  // for js
 
 import 'antd/lib/input/style/css';
 import 'antd/lib/input-number/style/css';
+import 'antd/lib/date-picker/style/css';        // for css
 import Img from '../Img';
 import QuestionMark from './questionMark.svg';
 import Tooltip from '../Tooltip';
 
 const StyledInput = styled.div`
   position: relative;
+`;
+
+const StyledDatePicker = styled.div`
+  .ant-calendar-picker {
+    width: 100%;
+  }
+  .ant-calendar-picker-clear, .ant-calendar-picker-icon {
+    top: 40%;
+  }
 `;
 
 const StyledImage = styled.div`
@@ -57,8 +68,20 @@ const Input = (props) => {
       />
     )
 
-  }
-  else{
+  } else if (props.type == "datetime") {
+    toRender.push(
+      <StyledDatePicker>
+        <DatePicker
+          showTime
+          disabledDate={(value) => value && value.unix() < new Date().getTime() / 1000}
+          format="YYYY-MM-DD HH:mm:ss"
+          key={props.placeholder}
+          placeholder={props.placeholder}
+          onChange={props.onChange}
+        />
+      </StyledDatePicker>
+    )
+  }  else{
     toRender.push(
       <InputAnt
         key={props.placeholder}
